@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="create_div">Create div</button>
+
+    <div id="container">
+        <!-- div create hoga -->
+    </div>
+
+</body>
+
+<script>
+
+    var create_div = document.getElementById("create_div");
+    var container = document.getElementById("container");
+    var id_count = 1;
+    
+    function generateRandomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        for (let i = 0; i < length; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randomIndex);
+        }
+        return result;
+    }
+
+
+    create_div.addEventListener("click", function(){
+        sessionStorage.setItem("session", generateRandomString(5));
+        var new_div = document.createElement("div");
+        new_div.id = "history-" + id_count;
+        var dict = new Map();
+        dict.set("session_id", sessionStorage.getItem("session"));
+        new_div.dataMap = dict; // Store the Map directly as a property
+        new_div.style.border = "1px solid black";
+        new_div.style.width = "10%";
+        new_div.style.height = "20%";
+        new_div.style.padding = "20px";
+        new_div.style.margin = "10px";
+        container.appendChild(new_div);
+
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                html = `<div class="default-text">
+                            <h1>Session_id : ${sessionStorage.getItem("session")}</h1>
+                        </div>`
+                session_id: sessionStorage.getItem("session")
+                html: 
+            })
+        }
+        fetch("/conv",requestOptions);
+
+        new_div.addEventListener("click", function(){
+            var history = document.getElementById(new_div.id);
+            console.log(history.dataMap.get("session_id")); // Use .get() to retrieve values from the Map
+            sessionStorage.setItem("session",history.dataMap.get("session_id"))
+            
+
+            const requestOptions = {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    session_id: sessionStorage.getItem("session")
+                })
+            }
+            fetch("/conv",requestOptions);
+        });
+
+        id_count++;
+    });
+
+
+    
+
+
+</script>
+
+</html>
